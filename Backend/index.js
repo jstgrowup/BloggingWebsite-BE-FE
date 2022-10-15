@@ -92,7 +92,16 @@ app.post("/checkOtp", async (req, res) => {
 
 
 })
+app.post("/test", async (req, res) => {
+    const { email, name } = req.body
+    // const { name, token } = req.body
 
+    // console.log(token, name);
+
+    console.log(email, name);
+    res.send("user sent")
+
+})
 app.post("/refresh", async (req, res) => {
     const refreshToken = req.headers.authorization
     try {

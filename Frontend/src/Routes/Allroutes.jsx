@@ -5,6 +5,7 @@ import ForgotPass from './ForgotPass'
 import Loginform from './Loginform'
 import PrivateRoute from './PrivateRoute'
 import Signup from './Signup'
+import Test from './Test'
 function Allroutes() {
     return (
         <>
@@ -17,6 +18,8 @@ function Allroutes() {
                 </PrivateRoute>
                 }></Route>
                 <Route path='/forgot' element={<ForgotPass />}></Route>
+                <Route path='/test' element={<Test/>}></Route>
+
             </Routes>
 
         </>
