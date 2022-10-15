@@ -94,9 +94,7 @@ app.post("/checkOtp", async (req, res) => {
 })
 app.post("/test", async (req, res) => {
     const { email, name } = req.body
-    // const { name, token } = req.body
-
-    // console.log(token, name);
+ 
 
     console.log(email, name);
     res.send("user sent")
@@ -136,11 +134,4 @@ app.get("/private", async (req, res) => {
 app.use("/auth", authRoute);
 app.use(passport.initialize());
 app.use(passport.session())
-app.listen(8080, async () => {
-    await mongoose.connect(
-        "mongodb+srv://subham:4321@cluster0.1pwqesk.mongodb.net/nem201b20"
-    );
-
-    console.log("server started");
-});
-
+mongoose.connect("mongodb+srv://subham:4321@cluster0.1pwqesk.mongodb.net/nem201b20").then(()=>app.listen(8080,()=>console.log("server started"))).catch(()=>console.log("something whrong in starting the server"))
