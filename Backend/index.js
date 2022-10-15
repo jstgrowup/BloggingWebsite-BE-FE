@@ -6,7 +6,7 @@ const cors = require("cors")
 
 app.use(cors())
 require("./googleOauth")
-const authRoute= require("./Auth")
+const authRoute = require("./Auth")
 const mongoose = require("mongoose")
 const userModel = require("./user.model")
 const { createTransport } = require("nodemailer")
@@ -25,8 +25,7 @@ const blacklist = []
 app.get("/", (req, res) => {
     res.send("HOMEPGAE")
 })
-app.use("/auth",authRoute);
-
+app.use("/auth", authRoute);
 app.use(passport.initialize());
 app.use(passport.session())
 
@@ -35,7 +34,6 @@ app.post("/signup", async (req, res) => {
     const { email, name, password } = req.body
     // const user = await userModel.create({ email: email, name: name, password: password, role: "User" })
     const user = await userModel.create({ email: email, name: name, password: password })
-
     const maintoken = jswt.sign({ id: user._id, password: user.password, email: user.email, name: user.name }, "MainSecret", { expiresIn: "10 min" })
     const refreshtoken = jswt.sign({ id: user._id, password: user.password, email: user.email, name: user.name }, "RefreshSecret", { expiresIn: "20 days" })
     transport.sendMail({
@@ -78,7 +76,7 @@ app.post("/forgotPass", async (req, res) => {
         subject: "Forgot Passowrd",
         text: `hello ${email} your OTP is ${otp}`
     }).then(() => {
-        
+
         const otpvar = otpModel.create({ email: email, otp: otp })
 
         res.send("otp sent")
@@ -98,9 +96,7 @@ app.post("/checkOtp", async (req, res) => {
 
 
 })
-// app.post("/googleOauth",async (req,res)=>{
 
-// })
 app.post("/refresh", async (req, res) => {
     const refreshToken = req.headers.authorization
     try {
