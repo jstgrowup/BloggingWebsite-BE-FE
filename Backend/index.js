@@ -17,17 +17,14 @@ const transport = createTransport({
     host: 'smtp.ethereal.email',
     port: 587,
     auth: {
-        user: 'tania.rau99@ethereal.email',
-        pass: 'k5FYdhBcGUZ6spw9Gc'
+        user: 'imogene.price8@ethereal.email',
+        pass: 'EJqWrtvGevCuarfNcY'
     }
 })
 const blacklist = []
 app.get("/", (req, res) => {
     res.send("HOMEPGAE")
 })
-app.use("/auth", authRoute);
-app.use(passport.initialize());
-app.use(passport.session())
 
 
 app.post("/signup", async (req, res) => {
@@ -68,7 +65,8 @@ app.post("/login", async (req, res) => {
 
 // })
 app.post("/forgotPass", async (req, res) => {
-    var { email } = req.body
+
+    const { email } = req.body
     var otp = Math.floor(Math.random() * 100000)
     transport.sendMail({
         to: email,
@@ -76,9 +74,7 @@ app.post("/forgotPass", async (req, res) => {
         subject: "Forgot Passowrd",
         text: `hello ${email} your OTP is ${otp}`
     }).then(() => {
-
         const otpvar = otpModel.create({ email: email, otp: otp })
-
         res.send("otp sent")
     }).catch((e) => res.status(401).send("invalid request"))
 
@@ -128,6 +124,9 @@ app.get("/private", async (req, res) => {
 
     }
 })
+app.use("/auth", authRoute);
+app.use(passport.initialize());
+app.use(passport.session())
 app.listen(8080, async () => {
     await mongoose.connect(
         "mongodb+srv://subham:4321@cluster0.1pwqesk.mongodb.net/nem201b20"

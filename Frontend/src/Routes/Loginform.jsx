@@ -30,7 +30,7 @@ function Loginform() {
     };
     const handleForgotPassword = () => {
         if (!values.email) alert("please enter email")
-        axios.post("http://localhost:8080/forgotPass", values.email)
+        axios.post("http://localhost:8080/forgotPass", { email: values.email }).then((res) => console.log(res)).catch(e => console.log(e))
     }
     return (
         <Flex direction={"column"} align={"center"}>

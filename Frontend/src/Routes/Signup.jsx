@@ -111,7 +111,7 @@ function Signup() {
             }
           />
 
-          <Text color={"#25CF60"}>Forgot Password?</Text>
+         
 
           <Button
             onClick={handleSubmit}
