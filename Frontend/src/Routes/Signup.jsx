@@ -59,6 +59,9 @@ function Signup() {
       .catch((er) => console.log(er))
 
   };
+  const handleGoogle = () => {
+     window.open("http://localhost:8080/auth/google","_self")
+  }
   return (
     <Flex direction={"column"} align={"center"}>
 
@@ -120,7 +123,7 @@ function Signup() {
           >
             Sign up for free
           </Button>
-
+          <Button onClick={handleGoogle}>google auth</Button>
         </Flex>
       </Box>
     </Flex>

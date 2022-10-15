@@ -5,11 +5,14 @@ app.use(express.json())
 const cors = require("cors")
 
 app.use(cors())
-
+require("./googleOauth")
+const authRoute= require("./Auth")
 const mongoose = require("mongoose")
 const userModel = require("./user.model")
 const { createTransport } = require("nodemailer")
 const otpModel = require("./Otp.model")
+const passport = require("passport")
+require("dotenv").config()
 const transport = createTransport({
     host: 'smtp.ethereal.email',
     port: 587,
@@ -19,6 +22,15 @@ const transport = createTransport({
     }
 })
 const blacklist = []
+app.get("/", (req, res) => {
+    res.send("HOMEPGAE")
+})
+app.use("/auth",authRoute);
+
+app.use(passport.initialize());
+app.use(passport.session())
+
+
 app.post("/signup", async (req, res) => {
     const { email, name, password } = req.body
     // const user = await userModel.create({ email: email, name: name, password: password, role: "User" })
@@ -66,7 +78,7 @@ app.post("/forgotPass", async (req, res) => {
         subject: "Forgot Passowrd",
         text: `hello ${email} your OTP is ${otp}`
     }).then(() => {
-
+        
         const otpvar = otpModel.create({ email: email, otp: otp })
 
         res.send("otp sent")
@@ -122,9 +134,9 @@ app.get("/private", async (req, res) => {
 })
 app.listen(8080, async () => {
     await mongoose.connect(
-      "mongodb+srv://subham:4321@cluster0.1pwqesk.mongodb.net/nem201b20"
+        "mongodb+srv://subham:4321@cluster0.1pwqesk.mongodb.net/nem201b20"
     );
-  
+
     console.log("server started");
-  });
+});
 

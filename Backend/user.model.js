@@ -10,6 +10,9 @@ const userSchema = new Schema({
     // },
     // verified: false
 
+}, {
+    versionKey: false
 })
+
 const userModel = model("users", userSchema)
 module.exports = userModel
