@@ -1,10 +1,4 @@
-// github
-// const Client_ID = "1834c6bdabab29c179ae"
-// const client_secret = "ea5424056e85c791ea32e5df158d61b724ab7526"
-// goolge
-//client ID=454887778237-pno12viu7pv4pse14b6n3ng8mi2dji0m.apps.googleusercontent.com
-// client secret=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
-// import  {Strategy} from 'passport-google-oauth20'
+
 // const GoogleStrategy = Strategy
 import React, { useEffect } from 'react'
 import axios from "axios"
@@ -19,21 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom"
 import { useState } from "react";
-// import passport from "passport";
 
-// passport.use(new Strategy({
-//   clientID: "454887778237 - pno12viu7pv4pse14b6n3ng8mi2dji0m.apps.googleusercontent.com",
-//   clientSecret: "GOCSPX - VSWBQYzDu3CU74rVRX6lSp - XlyXo",
-//   callbackURL: "http://localhost:3000/dashboard"
-// },
-//   function (accessToken, refreshToken, profile, cb) {
-//     // User.findOrCreate({ googleId: profile.id }, function (err, user) {
-//     //   return cb(err, user);
-//     // });
-//     console.log(profile);
-//   }
-
-// ));
 
 
 
