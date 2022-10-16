@@ -4,9 +4,7 @@ import {
     Box,
     Button,
     Flex,
-    Heading,
     Input,
-
     Text,
 
 } from "@chakra-ui/react";

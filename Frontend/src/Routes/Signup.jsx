@@ -17,7 +17,7 @@ import {
   Text,
 
 } from "@chakra-ui/react";
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom"
 import { useState } from "react";
 // import passport from "passport";
 
@@ -54,13 +54,14 @@ function Signup() {
 
     axios.post("http://localhost:8080/signup", values)
       .then((res) => {
-        console.log(res);
+        alert("thanks for signingup")
+        navigate("/login")
       })
-      .catch((er) => console.log(er))
+      .catch((er) => alert(er.message))
 
   };
   const handleGoogle = () => {
-     window.open("http://localhost:8080/auth/google","_self")
+    window.open("http://localhost:8080/auth/google", "_self")
   }
   return (
     <Flex direction={"column"} align={"center"}>
@@ -111,7 +112,7 @@ function Signup() {
             }
           />
 
-         
+
 
           <Button
             onClick={handleSubmit}

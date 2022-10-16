@@ -17,8 +17,8 @@ const transport = createTransport({
     host: 'smtp.ethereal.email',
     port: 587,
     auth: {
-        user: 'imogene.price8@ethereal.email',
-        pass: 'EJqWrtvGevCuarfNcY'
+        user: 'arch2@ethereal.email',
+        pass: 'P273aAWymhrXAmnXCd'
     }
 })
 const blacklist = []
@@ -39,7 +39,7 @@ app.post("/signup", async (req, res) => {
         subject: "hsagdshdgfhgsdjahgshdgf",
         text: "thanks for signup"
     }).then(() => {
-        console.log("mail sent");
+      
         res.send({ message: `signup success ${email} `, Maintoken: maintoken, refreshtoken: refreshtoken })
     })
 
