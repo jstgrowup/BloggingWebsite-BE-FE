@@ -6,7 +6,7 @@
 // client secret=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
 // import  {Strategy} from 'passport-google-oauth20'
 // const GoogleStrategy = Strategy
-import React from 'react'
+import React, { useEffect } from 'react'
 import axios from "axios"
 import {
   Box,
@@ -17,7 +17,7 @@ import {
   Text,
 
 } from "@chakra-ui/react";
-import { Link, Navigate, useNavigate, useParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useState } from "react";
 // import passport from "passport";
 
@@ -44,22 +44,29 @@ function Signup() {
 
   const navigate = useNavigate()
 
+  const [tokens, settokens] = useState({})
   const [values, setValues] = useState({
     email: "",
     password: "",
     name: "",
   });
-
   const handleSubmit = () => {
 
     axios.post("http://localhost:8080/signup", values)
       .then((res) => {
-        alert("thanks for signingup")
-        navigate("/login")
+        const { Maintoken, refreshtoken } = res.data
+        settokens({ Maintoken: Maintoken, refreshtoken: refreshtoken })
+        alert("thanks for sign up")
+
       })
       .catch((er) => alert(er.message))
 
   };
+  useEffect(() => {
+    localStorage.setItem("tokens", JSON.stringify(tokens))
+    
+  }, [tokens])
+
   const handleGoogle = () => {
     window.open("http://localhost:8080/auth/google", "_self")
   }

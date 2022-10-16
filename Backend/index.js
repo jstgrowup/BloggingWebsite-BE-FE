@@ -39,7 +39,7 @@ app.post("/signup", async (req, res) => {
         subject: "hsagdshdgfhgsdjahgshdgf",
         text: "thanks for signup"
     }).then(() => {
-      
+
         res.send({ message: `signup success ${email} `, Maintoken: maintoken, refreshtoken: refreshtoken })
     })
 
@@ -94,7 +94,7 @@ app.post("/checkOtp", async (req, res) => {
 })
 app.post("/test", async (req, res) => {
     const { email, name } = req.body
- 
+
 
     console.log(email, name);
     res.send("user sent")
@@ -131,7 +131,13 @@ app.get("/private", async (req, res) => {
 
     }
 })
+
 app.use("/auth", authRoute);
 app.use(passport.initialize());
 app.use(passport.session())
-mongoose.connect("mongodb+srv://subham:4321@cluster0.1pwqesk.mongodb.net/nem201b20").then(()=>app.listen(8080,()=>console.log("server started"))).catch(()=>console.log("something whrong in starting the server"))
+app.listen(8080, async () => {
+    await mongoose.connect(
+      "mongodb+srv://subham:4321@cluster0.1pwqesk.mongodb.net/nem201b20"
+    );
+    console.log("server started");
+  });
