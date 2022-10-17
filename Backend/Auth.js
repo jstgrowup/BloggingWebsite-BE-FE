@@ -10,7 +10,7 @@ router.get("/success", (req, res) => {
         success: true,
         message: "successfull",
         user: req,
-        //   cookies: req.cookies
+       
       });
 
 });

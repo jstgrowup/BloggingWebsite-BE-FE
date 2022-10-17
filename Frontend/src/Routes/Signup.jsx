@@ -1,5 +1,3 @@
-
-// const GoogleStrategy = Strategy
 import React, { useEffect } from 'react'
 import axios from "axios"
 import {
@@ -7,23 +5,12 @@ import {
   Button,
   Flex,
   Input,
-
-  Text,
-
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom"
 import { useState } from "react";
-
-
-
-
-
 function Signup() {
-
   const [showPassword, setShowPassword] = useState(false);
-
   const navigate = useNavigate()
-
   const [tokens, settokens] = useState({})
   const [values, setValues] = useState({
     email: "",
@@ -44,7 +31,7 @@ function Signup() {
   };
   useEffect(() => {
     localStorage.setItem("tokens", JSON.stringify(tokens))
-    
+
   }, [tokens])
 
   const handleGoogle = () => {
@@ -117,7 +104,6 @@ function Signup() {
     </Flex>
   );
 }
-
 export default Signup
 
 
