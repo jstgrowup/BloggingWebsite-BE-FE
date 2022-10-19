@@ -1,9 +1,12 @@
 const express = require("express")
 const jswt = require("jsonwebtoken")
 const app = express()
+const { Server } = require("socket.io")
+const http = require("http")
 app.use(express.json())
+const httpserver = http.createServer(app)
+const io = new Server(httpserver)
 const cors = require("cors")
-
 app.use(cors())
 require("./googleOauth")
 const authRoute = require("./Auth")
@@ -12,6 +15,7 @@ const userModel = require("./user.model")
 const { createTransport } = require("nodemailer")
 const otpModel = require("./Otp.model")
 const passport = require("passport")
+const { arch } = require("os")
 require("dotenv").config()
 const transport = createTransport({
     host: 'smtp.ethereal.email',
@@ -21,9 +25,16 @@ const transport = createTransport({
         pass: 'P273aAWymhrXAmnXCd'
     }
 })
+io.on("connection", (user) => {
+
+    console.log("new user connected");
+    user.on("disconnected", () => {
+        console.log("user disconnecteed");
+    })
+})
 const blacklist = []
 app.get("/", (req, res) => {
-    res.send("HOMEPGAE")
+    res.sendFile(__dirname + "/index.html")
 })
 
 
@@ -31,8 +42,7 @@ app.post("/signup", async (req, res) => {
     const { email, name, password } = req.body
     // const user = await userModel.create({ email: email, name: name, password: password, role: "User" })
     const user = await userModel.create({ email: email, name: name, password: password })
-    const maintoken = jswt.sign({ id: user._id, password: user.password, email: user.email, name: user.name }, "MainSecret", { expiresIn: "10 min" })
-    const refreshtoken = jswt.sign({ id: user._id, password: user.password, email: user.email, name: user.name }, "RefreshSecret", { expiresIn: "20 days" })
+
     transport.sendMail({
         to: user.email,
         from: "hello@gmail.com",
@@ -40,7 +50,7 @@ app.post("/signup", async (req, res) => {
         text: "thanks for signup"
     }).then(() => {
 
-        res.send({ message: `signup success ${email} `, Maintoken: maintoken, refreshtoken: refreshtoken })
+        res.send({ message: `signup success ${email} ` })
     })
 
 
@@ -50,10 +60,12 @@ app.post("/login", async (req, res) => {
     const user = await userModel.findOne({ email, password })
     // const token = jswt.sign({ role: user.role }, "lecSecret", { expiresIn: "5 min" })
     if (!user) return res.status(401)
+    const maintoken = jswt.sign({ id: user._id, password: user.password, email: user.email, name: user.name }, "MainSecret", { expiresIn: "10 min" })
+    const refreshtoken = jswt.sign({ id: user._id, password: user.password, email: user.email, name: user.name }, "RefreshSecret", { expiresIn: "20 days" })
     // else if (user.role === "student") res.send("you are a student")
     // else if (user.role === "instructor") res.send("you are student")
     // else if (user.role === "admin") res.send("you are admin")
-    res.send({ message: "login success" })
+    res.send({ Maintoken: maintoken, refreshtoken: refreshtoken })
 })
 // app.post("/createLecture", (req, res) => {
 //     const token = req.headers.authorization
@@ -135,9 +147,9 @@ app.get("/private", async (req, res) => {
 app.use("/auth", authRoute);
 app.use(passport.initialize());
 app.use(passport.session())
-app.listen(8080, async () => {
+httpserver.listen(8080, async () => {
     await mongoose.connect(
-      "mongodb+srv://subham:4321@cluster0.1pwqesk.mongodb.net/nem201b20"
+        "mongodb+srv://subham:4321@cluster0.1pwqesk.mongodb.net/nem201b20"
     );
     console.log("server started");
-  });
+});
