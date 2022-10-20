@@ -10,7 +10,7 @@ function Dashboard() {
     const [user, setuser] = useState({})
     const para = window.location.search
     const { refreshtoken } = JSON.parse(localStorage.getItem("tokens"))
-    console.log('refreshtoken:', refreshtoken)
+ 
 
     // const user = verify(refreshtoken, "RefreshSecret")
     // console.log('para:', para.split("=")[1])
@@ -25,6 +25,7 @@ function Dashboard() {
         setcomments("")
     }
     useEffect(() => {
+        axios.get
         socket.on("comment", (comment) => {
             setchat([...chat, comment])
         })
