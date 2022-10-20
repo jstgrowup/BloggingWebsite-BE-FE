@@ -22,8 +22,11 @@ function Loginform() {
     const handleSubmit = () => {
 
         axios.post("http://localhost:8080/login", values)
-            .then((res) => console.log(res))
-            .catch((er) => console.log(er))
+            .then((res) => {
+                console.log(res);
+                localStorage.setItem("tokens", JSON.stringify(res.data))
+            })
+            .catch((er) => alert(er.message))
 
     };
     const handleForgotPassword = () => {

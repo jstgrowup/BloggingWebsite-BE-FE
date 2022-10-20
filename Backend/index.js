@@ -1,13 +1,13 @@
+
 const express = require("express")
 const jswt = require("jsonwebtoken")
 const app = express()
 const { Server } = require("socket.io")
-const http = require("http")
 app.use(express.json())
-const httpserver = http.createServer(app)
-const io = new Server(httpserver)
+const httpserver = require("http").createServer(app)
 const cors = require("cors")
 app.use(cors())
+const io = require("socket.io")(httpserver)
 require("./googleOauth")
 const authRoute = require("./Auth")
 const mongoose = require("mongoose")
@@ -15,7 +15,7 @@ const userModel = require("./user.model")
 const { createTransport } = require("nodemailer")
 const otpModel = require("./Otp.model")
 const passport = require("passport")
-const { arch } = require("os")
+
 require("dotenv").config()
 const transport = createTransport({
     host: 'smtp.ethereal.email',
