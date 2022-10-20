@@ -2,12 +2,16 @@
 const express = require("express")
 const jswt = require("jsonwebtoken")
 const app = express()
-const { Server } = require("socket.io")
+
 app.use(express.json())
 const httpserver = require("http").createServer(app)
 const cors = require("cors")
 app.use(cors())
-const io = require("socket.io")(httpserver)
+const io = require("socket.io")(httpserver, {
+    cors: {
+        origin: "*"
+    }
+})
 require("./googleOauth")
 const authRoute = require("./Auth")
 const mongoose = require("mongoose")
@@ -15,7 +19,7 @@ const userModel = require("./user.model")
 const { createTransport } = require("nodemailer")
 const otpModel = require("./Otp.model")
 const passport = require("passport")
-
+const commentsModel = require("./Messeges.model")
 require("dotenv").config()
 const transport = createTransport({
     host: 'smtp.ethereal.email',
@@ -28,6 +32,9 @@ const transport = createTransport({
 io.on("connection", (user) => {
 
     console.log("new user connected");
+    user.on("comment", (payload) => {
+        io.emit("comment", payload)
+    })
     user.on("disconnected", () => {
         console.log("user disconnecteed");
     })
@@ -61,11 +68,22 @@ app.post("/login", async (req, res) => {
     // const token = jswt.sign({ role: user.role }, "lecSecret", { expiresIn: "5 min" })
     if (!user) return res.status(401)
     const maintoken = jswt.sign({ id: user._id, password: user.password, email: user.email, name: user.name }, "MainSecret", { expiresIn: "10 min" })
-    const refreshtoken = jswt.sign({ id: user._id, password: user.password, email: user.email, name: user.name }, "RefreshSecret", { expiresIn: "20 days" })
+    const refreshtoken = jswt.sign({ id: user._id, password: user.password, email: user.email, name: user.name }, "RefreshSecret", { expiresIn: "2 days" })
     // else if (user.role === "student") res.send("you are a student")
     // else if (user.role === "instructor") res.send("you are student")
     // else if (user.role === "admin") res.send("you are admin")
     res.send({ Maintoken: maintoken, refreshtoken: refreshtoken })
+})
+app.post("/VerifyTokenforFE", (req, res) => {
+    try {
+        const { token } = req.body
+        const user = jswt.verify(token, "RefreshSecret")
+        res.send(user)
+
+    } catch (error) {
+        console.log(error);
+        res.status(401).send("something wrong")
+    }
 })
 // app.post("/createLecture", (req, res) => {
 //     const token = req.headers.authorization
@@ -76,6 +94,10 @@ app.post("/login", async (req, res) => {
 //     else res.send("you are not allowed")
 
 // })
+app.get("/getAllMesseges", async (req, res) => {
+    const messeges = await commentsModel.find()
+    res.send(messeges)
+})
 app.post("/forgotPass", async (req, res) => {
 
     const { email } = req.body
@@ -144,9 +166,9 @@ app.get("/private", async (req, res) => {
     }
 })
 
-app.use("/auth", authRoute);
-app.use(passport.initialize());
-app.use(passport.session())
+// app.use("/auth", authRoute);
+// app.use(passport.initialize());
+// app.use(passport.session())
 httpserver.listen(8080, async () => {
     await mongoose.connect(
         "mongodb+srv://subham:4321@cluster0.1pwqesk.mongodb.net/nem201b20"
