@@ -8,9 +8,10 @@ function Dashboard() {
     const [comments, setcomments] = useState("")
     const [chat, setchat] = useState([])
     const [user, setuser] = useState({})
+    const [allmesseges, setallmesseges] = useState("")
     const para = window.location.search
     const { refreshtoken } = JSON.parse(localStorage.getItem("tokens"))
- 
+
 
     // const user = verify(refreshtoken, "RefreshSecret")
     // console.log('para:', para.split("=")[1])
@@ -25,10 +26,11 @@ function Dashboard() {
         setcomments("")
     }
     useEffect(() => {
-        axios.get
+        axios.get("http://localhost:8080/getAllMesseges").then(res => console.log(res)).catch(er => console.log(er))
         socket.on("comment", (comment) => {
             setchat([...chat, comment])
         })
+        axios.post()
     },)
 
     return (
