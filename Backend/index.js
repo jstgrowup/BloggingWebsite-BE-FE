@@ -94,6 +94,12 @@ app.post("/VerifyTokenforFE", (req, res) => {
 //     else res.send("you are not allowed")
 
 // })
+app.post("/postMesseges", async (req, res) => {
+
+    const { messege } = req.body
+    const messeges = await commentsModel.create({ comments: messege })
+    res.send(messege)
+})
 app.get("/getAllMesseges", async (req, res) => {
     const messeges = await commentsModel.find()
     res.send(messeges)

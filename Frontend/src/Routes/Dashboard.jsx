@@ -8,9 +8,10 @@ function Dashboard() {
     const [comments, setcomments] = useState("")
     const [chat, setchat] = useState([])
     const [user, setuser] = useState({})
-    const [allmesseges, setallmesseges] = useState("")
+    const [allmesseges, setallmesseges] = useState([])
+
     const para = window.location.search
-    const { refreshtoken } = JSON.parse(localStorage.getItem("tokens"))
+    // const { refreshtoken } = JSON.parse(localStorage.getItem("tokens"))
 
 
     // const user = verify(refreshtoken, "RefreshSecret")
@@ -19,32 +20,37 @@ function Dashboard() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         socket.emit("comment", { comments })
-        await axios.post("http://localhost:8080/VerifyTokenforFE", { token: refreshtoken }).then((res) => {
-
-            setuser(res.data)
+        await axios.post("http://localhost:8080/postMesseges", { messege: comments }).then((res) => {
+            
+            console.log(comments);
         }).catch(er => alert(er.message))
         setcomments("")
     }
     useEffect(() => {
-        axios.get("http://localhost:8080/getAllMesseges").then(res => console.log(res)).catch(er => console.log(er))
+        axios.get("http://localhost:8080/getAllMesseges").then(res =>setallmesseges(res.data) ).catch(er => console.log(er))
+        
         socket.on("comment", (comment) => {
             setchat([...chat, comment])
         })
-        axios.post()
-    },)
+        
+    },[allmesseges])
 
+
+    
     return (
         <div>
             <h1>Comments</h1>
             {
-                chat.map((el, i) => {
+                allmesseges.map((el, i) => {
                     return (
-                        <p key={i}>{el.comments}:<span>{user.name}</span> </p>
+                        <p key={i}>{el.comments}:
+                        {/* <span>{user.name}</span>  */}
+                        </p>
                     )
                 })
             }
             <form action="" onSubmit={handleSubmit}>
-                <input type="text" placeholder='Comment' onChange={(e) => setcomments(e.target.value)} value={comments} />
+                <input type="text" placeholder='Comment' onChange={(e) => setcomments(e.target.value)}  />
                 <input type="submit" value="Send " />
             </form>
 
