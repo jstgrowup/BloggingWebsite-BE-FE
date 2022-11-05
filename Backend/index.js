@@ -7,6 +7,14 @@ app.use(express.json())
 const httpserver = require("http").createServer(app)
 const cors = require("cors")
 app.use(cors())
+
+const redis = require("redis")
+const redisCLient = redis.createClient()
+redisCLient.connect() 
+redisCLient.on("connect",()=>{
+    console.log("redis connected");
+})
+
 const io = require("socket.io")(httpserver, {
     cors: {
         origin: "*"
@@ -43,9 +51,8 @@ const blacklist = []
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/index.html")
 })
-
-
 app.post("/signup", async (req, res) => {
+
     const { email, name, password } = req.body
     // const user = await userModel.create({ email: email, name: name, password: password, role: "User" })
     const user = await userModel.create({ email: email, name: name, password: password })
@@ -65,7 +72,8 @@ app.post("/signup", async (req, res) => {
 app.post("/login", async (req, res) => {
     const { email, password } = req.body
     const user = await userModel.findOne({ email, password })
-    // const token = jswt.sign({ role: user.role }, "lecSecret", { expiresIn: "5 min" })
+    const token = jswt.sign({ role: user.role }, "lecSecret", { expiresIn: "5 min" })
+
     if (!user) return res.status(401)
     const maintoken = jswt.sign({ id: user._id, password: user.password, email: user.email, name: user.name }, "MainSecret", { expiresIn: "10 min" })
     const refreshtoken = jswt.sign({ id: user._id, password: user.password, email: user.email, name: user.name }, "RefreshSecret", { expiresIn: "2 days" })
@@ -85,15 +93,7 @@ app.post("/VerifyTokenforFE", (req, res) => {
         res.status(401).send("something wrong")
     }
 })
-// app.post("/createLecture", (req, res) => {
-//     const token = req.headers.authorization
-//     const { title, zoomlink } = req.body
 
-//     const user = jswt.decode(token)
-//     if (decode.role === "instructor") res.send("lecture created")
-//     else res.send("you are not allowed")
-
-// })
 app.post("/postMesseges", async (req, res) => {
 
     const { messege } = req.body
@@ -122,15 +122,13 @@ app.post("/forgotPass", async (req, res) => {
 app.post("/checkOtp", async (req, res) => {
     var { otp, email, password } = req.body
     const tok = await otpModel.find({ otp: otp, email: email })
-    // console.log(tok);
+
     if (tok.length === 0) res.status(401).send("invalid")
     else {
 
         const huru = await userModel.findOneAndUpdate({ email: email }, { $set: { password: password } })
         res.send(huru)
     }
-
-
 })
 app.post("/test", async (req, res) => {
     const { email, name } = req.body
@@ -171,6 +169,10 @@ app.get("/private", async (req, res) => {
 
     }
 })
+// redis
+
+
+
 
 // app.use("/auth", authRoute);
 // app.use(passport.initialize());
